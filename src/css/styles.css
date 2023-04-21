@@ -59,6 +59,7 @@ img {
   flex-basis: calc((100% - 90px) / 4);
   border: 2px solid black;
   border-radius: 8px;
+  background-color: lightgrey;
 }
 
 .info {
@@ -70,12 +71,26 @@ img {
 }
 
 .load-more {
-  width: 100px;
-  height: 30px;
+  display: block;
+  margin-top: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 120px;
+  height: 40px;
   background: #0066fa;
   color: #fff;
   border: none;
   border-radius: 8px;
-  margin-left: 15px;
+
   cursor: pointer;
+}
+
+.load-more:disabled {
+  background: #c1c1c1;
+  color: #fff;
+  cursor: not-allowed;
+}
+
+.load-more.hidden {
+  display: none;
 }

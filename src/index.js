@@ -3,39 +3,92 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
-import fetchPictures from './api';
+// import { fetchPictures } from './js/api';
+import LoadMoreBtn from './js/loadMoreBtn';
+import FetchPictures from './js/api';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
+const fetchPictures = new FetchPictures();
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '.load-more',
+  isHidden: true,
+});
+
+console.log(fetchPictures);
+
+// loadMoreBtn.disable();
+
+// setTimeout(() => loadMoreBtn.enable(), 3000);
+
 searchForm.addEventListener('submit', onSubmitForm);
+loadMoreBtn.button.addEventListener('click', onLoadMore);
 
 function onSubmitForm(event) {
   event.preventDefault();
+  loadMoreBtn.show();
+
   const formElements = event.currentTarget.elements;
   const searchQuery = formElements.searchQuery.value;
+  fetchPictures.query = searchQuery;
 
-  fetchPictures(searchQuery)
-    .then(createCard)
+  fetchPictures.resetPage();
+
+  clearMarkup();
+  onLoadMore();
+
+  // try {
+  //   const pictures = await fetchPictures(searchQuery);
+  //   createCard(pictures);
+  // } catch (error) {
+  //   if (error.message === '404') {
+  //     Notiflix.Notify.failure('Not found image ');
+  //   }
+  // }
+}
+
+function onLoadMore() {
+  loadMoreBtn.disable();
+  return fetchCardMarkup()
+    .then(markup => {
+      updateMarkup(markup);
+      loadMoreBtn.enable();
+    })
     .catch(err => {
       if (err.message === '404') {
-        Notiflix.Notify.failure('Oops, there is no image with that name');
+        Notiflix.Notify.failure('Not found image ');
       }
     });
 }
 
-function createCard({ hits }) {
-  if (hits.length === 0) {
-    Notiflix.Notify.failure('Not found image');
-  }
+function fetchCardMarkup() {
+  return fetchPictures.getPictures().then(({ hits }) => {
+    if (hits.length === 0) {
+      Notiflix.Notify.failure('Oops, there is no image with that name');
+      loadMoreBtn.hide();
+    }
 
-  const createCard = hits.reduce(
-    (markup, card) => markup + createMarkup(card),
-    ''
-  );
-
-  gallery.innerHTML = createCard;
+    const createCard = hits.reduce(
+      (markup, card) => markup + createMarkup(card),
+      ''
+    );
+    return createCard;
+  });
 }
+
+// function createCard({ hits }) {
+//   if (hits.length === 0) {
+//     Notiflix.Notify.failure('Oops, there is no image with that name');
+//   }
+
+//   const createCard = hits.reduce(
+//     (markup, card) => markup + createMarkup(card),
+//     ''
+//   );
+
+// gallery.innerHTML = createCard;
+// }
 
 function createMarkup({
   webformatURL,
@@ -64,3 +117,42 @@ function createMarkup({
     </div>
   </div>`;
 }
+
+function updateMarkup(markup) {
+  gallery.insertAdjacentHTML('beforeend', markup);
+}
+
+function clearMarkup() {
+  gallery.innerHTML = '';
+}
+
+// function getFruit(name) {
+//   const fruits = {
+//     apple: 'green',
+//     lemon: 'yellow',
+//     peach: 'orange',
+//   };
+
+//   return Promise.resolve(fruits[name]);
+// }
+
+// async function aMakeSmooth() {
+//   const apple = await getFruit('apple');
+
+//   console.log(apple);
+
+//   const lemon = await getFruit('lemon');
+
+//   console.log(lemon);
+// }
+
+// aMakeSmooth();
+
+// function makeSmooth() {
+//   getFruit('apple').then(resolve => {
+//     console.log(resolve);
+//     getFruit('lemon').then(resolve => console.log(resolve));
+//   });
+// }
+
+// makeSmooth();
