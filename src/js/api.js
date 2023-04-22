@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const URL = 'https://pixabay.com/api/';
 const API_KEY = '35615782-928d74ab541d750ac5cbbfeab';
 const FIELDS = 'image_type=photo&orientation=horizontal&safesearch=true';
@@ -8,14 +10,12 @@ export default class FetchPictures {
     this.page = 1;
   }
 
-  getPictures() {
+  async getPictures() {
     const url = `${URL}?key=${API_KEY}&q=${this.query}&${FIELDS}&per_page=40&page=${this.page}`;
+    const response = await fetch(url);
+    const pictures = await response.json();
 
-    return fetch(url).then(response => {
-      this.incrementPage();
-
-      return response.json();
-    });
+    return pictures;
   }
 
   incrementPage() {

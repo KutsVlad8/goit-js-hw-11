@@ -2,18 +2,17 @@ import './css/styles.css';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import axios from 'axios';
+
 import LoadMoreBtn from './js/loadMoreBtn';
 import FetchPictures from './js/api';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
-const lightbox = new SimpleLightbox('.photo-card a', {
-  captionsData: 'alt',
-  captionPosition: 'bottom',
-  captionDelay: 250,
-});
+// const lightbox = new SimpleLightbox('.photo-card a', {
+//   captionsData: 'alt',
+//   captionDelay: 250,
+// });
 
 const fetchPictures = new FetchPictures();
 const loadMoreBtn = new LoadMoreBtn({
@@ -27,6 +26,8 @@ loadMoreBtn.button.addEventListener('click', onLoadMore);
 function onSubmitForm(event) {
   event.preventDefault();
   loadMoreBtn.show();
+  loadMoreBtn.disable();
+  clearMarkup();
 
   const formElements = event.currentTarget.elements;
   const searchQuery = formElements.searchQuery.value;
@@ -34,9 +35,24 @@ function onSubmitForm(event) {
 
   fetchPictures.resetPage();
 
-  clearMarkup();
-  onLoadMore();
+  fetchPictures.getPictures().then(({ hits, totalHits }) => {
+    if (hits.length === 0) {
+      Notiflix.Notify.failure('Oops, there is no image with that name');
+      loadMoreBtn.disable();
+      return;
+    }
 
+    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+
+    const createCard = hits.reduce(
+      (markup, card) => markup + createMarkup(card),
+      ''
+    );
+
+    loadMoreBtn.enable();
+    updateMarkup(createCard);
+    fetchPictures.incrementPage();
+  });
   // try {
   //   const pictures = await fetchPictures(searchQuery);
   //   createCard(pictures);
@@ -49,30 +65,15 @@ function onSubmitForm(event) {
 
 function onLoadMore() {
   loadMoreBtn.disable();
-  return fetchCardMarkup()
-    .then(markup => {
-      updateMarkup(markup);
-      loadMoreBtn.enable();
-    })
-    .catch(err => {
-      if (err.message === '404') {
-        Notiflix.Notify.failure('Not found image ');
-      }
-    });
-}
 
-function fetchCardMarkup() {
-  return fetchPictures.getPictures().then(({ hits }) => {
-    if (hits.length === 0) {
-      Notiflix.Notify.failure('Oops, there is no image with that name');
-      loadMoreBtn.hide();
-    }
-
+  fetchPictures.getPictures().then(({ hits, totalHits }) => {
     const createCard = hits.reduce(
       (markup, card) => markup + createMarkup(card),
       ''
     );
-    return createCard;
+    loadMoreBtn.enable();
+    updateMarkup(createCard);
+    fetchPictures.incrementPage();
   });
 }
 
@@ -86,7 +87,9 @@ function createMarkup({
   downloads,
 }) {
   return `<div class="photo-card">
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" width="100%"/>
+   <a  href="${largeImageURL}">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" "/> 
+  </a>
     <div class="info">
       <p class="info-item">
         <b>Likes</b>${likes}
@@ -111,16 +114,3 @@ function updateMarkup(markup) {
 function clearMarkup() {
   gallery.innerHTML = '';
 }
-
-// function createCard({ hits }) {
-//   if (hits.length === 0) {
-//     Notiflix.Notify.failure('Oops, there is no image with that name');
-//   }
-
-//   const createCard = hits.reduce(
-//     (markup, card) => markup + createMarkup(card),
-//     ''
-//   );
-
-// gallery.innerHTML = createCard;
-// }
