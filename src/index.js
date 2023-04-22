@@ -9,7 +9,7 @@ import FetchPictures from './js/api';
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
-const lightbox = new SimpleLightbox('.photo-card img', {
+const lightbox = new SimpleLightbox('.photo-card a', {
   captionsData: 'alt',
   captionPosition: 'bottom',
   captionDelay: 250,
