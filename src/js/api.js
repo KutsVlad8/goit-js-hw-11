@@ -12,10 +12,16 @@ export default class FetchPictures {
 
   async getPictures() {
     const url = `${URL}?key=${API_KEY}&q=${this.query}&${FIELDS}&per_page=40&page=${this.page}`;
-    const response = await fetch(url);
-    const pictures = await response.json();
 
-    return pictures;
+    try {
+      const response = await axios.get(url);
+
+      return response;
+    } catch (error) {
+      if (error.message === '404') {
+        Notiflix.Notify.failure('');
+      }
+    }
   }
 
   incrementPage() {
