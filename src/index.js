@@ -3,24 +3,23 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
-// import { fetchPictures } from './js/api';
 import LoadMoreBtn from './js/loadMoreBtn';
 import FetchPictures from './js/api';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
+const lightbox = new SimpleLightbox('.photo-card img', {
+  captionsData: 'alt',
+  captionPosition: 'bottom',
+  captionDelay: 250,
+});
+
 const fetchPictures = new FetchPictures();
 const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
   isHidden: true,
 });
-
-console.log(fetchPictures);
-
-// loadMoreBtn.disable();
-
-// setTimeout(() => loadMoreBtn.enable(), 3000);
 
 searchForm.addEventListener('submit', onSubmitForm);
 loadMoreBtn.button.addEventListener('click', onLoadMore);
@@ -77,19 +76,6 @@ function fetchCardMarkup() {
   });
 }
 
-// function createCard({ hits }) {
-//   if (hits.length === 0) {
-//     Notiflix.Notify.failure('Oops, there is no image with that name');
-//   }
-
-//   const createCard = hits.reduce(
-//     (markup, card) => markup + createMarkup(card),
-//     ''
-//   );
-
-// gallery.innerHTML = createCard;
-// }
-
 function createMarkup({
   webformatURL,
   largeImageURL,
@@ -126,33 +112,15 @@ function clearMarkup() {
   gallery.innerHTML = '';
 }
 
-// function getFruit(name) {
-//   const fruits = {
-//     apple: 'green',
-//     lemon: 'yellow',
-//     peach: 'orange',
-//   };
+// function createCard({ hits }) {
+//   if (hits.length === 0) {
+//     Notiflix.Notify.failure('Oops, there is no image with that name');
+//   }
 
-//   return Promise.resolve(fruits[name]);
+//   const createCard = hits.reduce(
+//     (markup, card) => markup + createMarkup(card),
+//     ''
+//   );
+
+// gallery.innerHTML = createCard;
 // }
-
-// async function aMakeSmooth() {
-//   const apple = await getFruit('apple');
-
-//   console.log(apple);
-
-//   const lemon = await getFruit('lemon');
-
-//   console.log(lemon);
-// }
-
-// aMakeSmooth();
-
-// function makeSmooth() {
-//   getFruit('apple').then(resolve => {
-//     console.log(resolve);
-//     getFruit('lemon').then(resolve => console.log(resolve));
-//   });
-// }
-
-// makeSmooth();

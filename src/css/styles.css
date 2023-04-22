@@ -24,6 +24,13 @@ img {
   max-width: 100%;
 }
 
+.header {
+  height: 80px;
+  background-color: orange;
+  border-bottom: 2px solid #212121;
+  padding-top: 25px;
+}
+
 /* Форма  */
 
 .search-form {
@@ -33,6 +40,11 @@ img {
 
 .search-form__input {
   height: 30px;
+  padding-left: 8px;
+
+  border: none;
+  border-radius: 8px;
+  outline-color: #0066fa;
 }
 
 .search-form__button {
@@ -52,7 +64,7 @@ img {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 
 .photo-card {
