@@ -3,16 +3,16 @@ import Notiflix from 'notiflix';
 import LoadMoreBtn from './js/loadMoreBtn';
 import FetchPictures from './js/api';
 
-// import SimpleLightbox from 'simplelightbox';
-// import 'simplelightbox/dist/simple-lightbox.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
-// const lightbox = new SimpleLightbox('.photo-card a', {
-//   captionsData: 'alt',
-//   captionDelay: 250,
-// });
+const lightbox = new SimpleLightbox('.photo-card a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const fetchPictures = new FetchPictures();
 const loadMoreBtn = new LoadMoreBtn({
@@ -85,7 +85,10 @@ function createMarkup({
   downloads,
 }) {
   return `<div class="photo-card">
-  <img src="${webformatURL}" alt="${tags}" loading="lazy" "/> 
+   <a href="${largeImageURL}">
+      <img src="${webformatURL}" alt="${tags}" loading="lazy" "/>  
+   </a>
+  
     <div class="info">
       <p class="info-item">
         <b>Likes</b>${likes}
