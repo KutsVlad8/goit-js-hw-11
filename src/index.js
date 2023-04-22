@@ -8,11 +8,10 @@ import FetchPictures from './js/api';
 
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
-
-// const lightbox = new SimpleLightbox('.photo-card a', {
-//   captionsData: 'alt',
-//   captionDelay: 250,
-// });
+const lightbox = new SimpleLightbox('.photo-card a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const fetchPictures = new FetchPictures();
 const loadMoreBtn = new LoadMoreBtn({
@@ -31,11 +30,16 @@ function onSubmitForm(event) {
 
   const formElements = event.currentTarget.elements;
   const searchQuery = formElements.searchQuery.value;
+  if (searchQuery === '') {
+    Notiflix.Notify.failure('Oops, the search box is blank');
+    return;
+  }
   fetchPictures.query = searchQuery;
 
   fetchPictures.resetPage();
 
-  fetchPictures.getPictures().then(({ hits, totalHits }) => {
+  fetchPictures.getPictures().then(({ data }) => {
+    const { hits, totalHits } = data;
     if (hits.length === 0) {
       Notiflix.Notify.failure('Oops, there is no image with that name');
       loadMoreBtn.disable();
@@ -53,20 +57,13 @@ function onSubmitForm(event) {
     updateMarkup(createCard);
     fetchPictures.incrementPage();
   });
-  // try {
-  //   const pictures = await fetchPictures(searchQuery);
-  //   createCard(pictures);
-  // } catch (error) {
-  //   if (error.message === '404') {
-  //     Notiflix.Notify.failure('Not found image ');
-  //   }
-  // }
 }
 
 function onLoadMore() {
   loadMoreBtn.disable();
 
-  fetchPictures.getPictures().then(({ hits, totalHits }) => {
+  fetchPictures.getPictures().then(({ data }) => {
+    const { hits } = data;
     const createCard = hits.reduce(
       (markup, card) => markup + createMarkup(card),
       ''
