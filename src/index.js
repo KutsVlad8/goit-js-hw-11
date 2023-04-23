@@ -9,11 +9,6 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const searchForm = document.getElementById('search-form');
 const gallery = document.querySelector('.gallery');
 
-const lightbox = new SimpleLightbox('.photo-card a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
 const fetchPictures = new FetchPictures();
 const loadMoreBtn = new LoadMoreBtn({
   selector: '.load-more',
@@ -39,8 +34,7 @@ function onSubmitForm(event) {
 
   fetchPictures.resetPage();
 
-  fetchPictures.getPictures().then(({ data }) => {
-    const { hits, totalHits } = data;
+  fetchPictures.getPictures().then(({ hits, totalHits }) => {
     if (hits.length === 0) {
       Notiflix.Notify.failure('Oops, there is no image with that name');
       loadMoreBtn.disable();
@@ -63,8 +57,7 @@ function onSubmitForm(event) {
 function onLoadMore() {
   loadMoreBtn.disable();
 
-  fetchPictures.getPictures().then(({ data }) => {
-    const { hits } = data;
+  fetchPictures.getPictures().then(({ hits }) => {
     const createCard = hits.reduce(
       (markup, card) => markup + createMarkup(card),
       ''
@@ -108,6 +101,11 @@ function createMarkup({
 
 function updateMarkup(markup) {
   gallery.insertAdjacentHTML('beforeend', markup);
+  const lightbox = new SimpleLightbox('.photo-card a', {
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
+  lightbox.refresh();
 }
 
 function clearMarkup() {
