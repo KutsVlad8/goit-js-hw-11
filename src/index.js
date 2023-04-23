@@ -62,6 +62,7 @@ function onLoadMore() {
       (markup, card) => markup + createMarkup(card),
       ''
     );
+
     loadMoreBtn.enable();
     updateMarkup(createCard);
     fetchPictures.incrementPage();
