@@ -3,6 +3,9 @@ import axios from 'axios';
 const URL = 'https://pixabay.com/api/';
 const API_KEY = '35615782-928d74ab541d750ac5cbbfeab';
 const FIELDS = 'image_type=photo&orientation=horizontal&safesearch=true';
+// const params = {
+//   key: API_KEY,
+// };
 
 export default class FetchPictures {
   constructor() {
@@ -15,13 +18,29 @@ export default class FetchPictures {
 
     try {
       const response = await axios.get(url);
-
-      return response;
+      console.log(response.data);
+      return response.data;
     } catch (error) {
       if (error.message === '404') {
-        Notiflix.Notify.failure('');
+        Notiflix.Notify.failure(
+          'The server cannot find the requested resource'
+        );
       }
     }
+
+    // const url = `${URL}?q=${this.query}&${FIELDS}&per_page=40&page=${this.page}`;
+
+    // try {
+    //   const response = await axios.get(url, params);
+    //   console.log(response.data);
+    //   return response.data;
+    // } catch (error) {
+    //   if (error.message === '404') {
+    //     Notiflix.Notify.failure(
+    //       'The server cannot find the requested resource'
+    //     );
+    //   }
+    // }
   }
 
   incrementPage() {
