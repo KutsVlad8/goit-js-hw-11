@@ -43,6 +43,22 @@ function onSubmitForm(event) {
 
     Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
 
+    if (hits.length === totalHits) {
+      setTimeout(() => {
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }, 1500);
+      const createCard = hits.reduce(
+        (markup, card) => markup + createMarkup(card),
+        ''
+      );
+      loadMoreBtn.hide();
+      updateMarkup(createCard);
+      fetchPictures.incrementPage();
+      return;
+    }
+
     const createCard = hits.reduce(
       (markup, card) => markup + createMarkup(card),
       ''
@@ -57,7 +73,20 @@ function onSubmitForm(event) {
 function onLoadMore() {
   loadMoreBtn.disable();
 
-  fetchPictures.getPictures().then(({ hits }) => {
+  fetchPictures.getPictures().then(({ hits, totalHits }) => {
+    if (40 + hits.length === totalHits) {
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      const createCard = hits.reduce(
+        (markup, card) => markup + createMarkup(card),
+        ''
+      );
+      loadMoreBtn.hide();
+      updateMarkup(createCard);
+      fetchPictures.incrementPage();
+      return;
+    }
     const createCard = hits.reduce(
       (markup, card) => markup + createMarkup(card),
       ''
