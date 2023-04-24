@@ -26,6 +26,7 @@ function onSubmitForm(event) {
 
   const formElements = event.currentTarget.elements;
   const searchQuery = formElements.searchQuery.value;
+
   if (searchQuery === '') {
     Notiflix.Notify.failure('Oops, the search box is blank');
     return;
@@ -74,7 +75,7 @@ function onLoadMore() {
   loadMoreBtn.disable();
 
   fetchPictures.getPictures().then(({ hits, totalHits }) => {
-    if (40 + hits.length === totalHits) {
+    if (fetchPictures.per_page + hits.length === totalHits) {
       setTimeout(() => {
         Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."

@@ -6,6 +6,7 @@ export default class FetchPictures {
   constructor() {
     this.query = '';
     this.page = 1;
+    this.per_page = 40;
   }
 
   async getPictures() {
@@ -17,7 +18,7 @@ export default class FetchPictures {
           image_type: 'photo',
           orientation: 'horizontal',
           safesearch: true,
-          per_page: 40,
+          per_page: this.per_page,
           page: this.page,
         },
       });
