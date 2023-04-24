@@ -75,9 +75,12 @@ function onLoadMore() {
 
   fetchPictures.getPictures().then(({ hits, totalHits }) => {
     if (40 + hits.length === totalHits) {
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
+      setTimeout(() => {
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }, 1000);
+
       const createCard = hits.reduce(
         (markup, card) => markup + createMarkup(card),
         ''
