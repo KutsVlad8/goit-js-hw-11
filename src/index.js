@@ -42,14 +42,11 @@ function onSubmitForm(event) {
       return;
     }
 
-    Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    setTimeout(() => {
+      Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
+    }, 300);
 
     if (hits.length === totalHits) {
-      setTimeout(() => {
-        Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-      }, 1500);
       const createCard = hits.reduce(
         (markup, card) => markup + createMarkup(card),
         ''
@@ -75,12 +72,18 @@ function onLoadMore() {
   loadMoreBtn.disable();
 
   fetchPictures.getPictures().then(({ hits, totalHits }) => {
-    if (fetchPictures.per_page + hits.length === totalHits) {
+    const lastPage = Math.ceil(totalHits / fetchPictures.per_page);
+    console.log(fetchPictures.page);
+
+    if (
+      fetchPictures.per_page + hits.length === totalHits ||
+      lastPage === fetchPictures.page
+    ) {
       setTimeout(() => {
         Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
-      }, 1000);
+      }, 500);
 
       const createCard = hits.reduce(
         (markup, card) => markup + createMarkup(card),
